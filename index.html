@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="text" id="input" placeholder="텍스트 입력">
+  <button id="generate">생성</button>
+  <p id="output"></p>
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+    async function generateContent() {
+      try {
+        const genAI = new GoogleGenerativeAI('AIzaSyBuxqNb7hMANG1Uj6LPBI2VO_-nhmpmhNo');
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
+
+        const presetprompt = '너는 학교 정보 ai입니다. 학교와 관련된 질문에만 대답하시오\n친근한 말투로 짧게 대답하시오, 학교 정보:\n';
+        const prompt = document.getElementById('input').value;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        document.getElementById('output').textContent = text;
+      } catch (error) {
+        console.error("Error generating content:", error);
+        outputDiv.textContent = 'Error: ' + error.message;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const generateButton = document.getElementById('generate');
+      if (generateButton) {
+        generateButton.addEventListener('click', generateContent);
+      }
+    });
+  </script>
+</body>
+
+</html>
