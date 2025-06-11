@@ -15,15 +15,18 @@
   <script type="module">
     import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
+    let data = '';
+    let dataprompt = '';
+
     async function generateContent() {
       try {
         const genAI = new GoogleGenerativeAI('AIzaSyBuxqNb7hMANG1Uj6LPBI2VO_-nhmpmhNo');
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
 
-        const presetprompt = '너는 학교 정보 ai입니다. 학교와 관련된 질문에만 대답하시오\n친근한 말투로 짧게 대답하시오, 학교 정보:\n';
+        const presetprompt = '너는 충렬고등학교 정보 ai입니다. 학교와 관련된 질문에만 대답하시오\n학교 정보:\n';
         const prompt = document.getElementById('input').value;
 
-        const result = await model.generateContent(prompt);
+        const result = await model.generateContent(presetprompt + dataprompt + prompt);
         const response = await result.response;
         const text = response.text();
 
@@ -34,11 +37,40 @@
       }
     }
 
+    function parseCSV(csvString) {
+      const rows = csvString.split('\n').map(row => row.trim()).filter(row => row.length > 0);
+
+      const data = rows.map(row => {
+        const fields = row.match(/(?:[^," Voting"]+|"([^"]*)")+/g);
+        return fields.map(field => {
+          if (field.startsWith('"') && field.endsWith('"')) {
+            return field.substring(1, field.length - 1).replace(/""/g, '"');
+          }
+          return field;
+        });
+      });
+      return data;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const generateButton = document.getElementById('generate');
-      if (generateButton) {
-        generateButton.addEventListener('click', generateContent);
-      }
+      generateButton.addEventListener('click', generateContent);
+
+      fetch('https://raw.githubusercontent.com/CodingChung/schoolAI/refs/heads/main/data.csv')
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
+          return response.text();
+        })
+        .then(text => {
+          data = parseCSV(text);
+
+          data.forEach(row => {
+            dataprompt += `${row[0]}\n${row[1]}\n\n`;
+          });
+        })
+        .catch(error => {
+          console.error('Failed to fetch:', error);
+        });
     });
   </script>
 </body>
