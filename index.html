@@ -23,10 +23,10 @@
         const genAI = new GoogleGenerativeAI('AIzaSyBuxqNb7hMANG1Uj6LPBI2VO_-nhmpmhNo');
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-8b" });
 
-        const presetprompt = '너는 충렬고등학교 정보 ai입니다. 학교와 관련된 질문에만 대답하시오, 교실 위치를 물어볼 시 옆 호실도 같이 알려줄 것\n학교 정보:\n';
+        const presetprompt = '너는 충렬고등학교 정보 ai입니다. 학교와 관련된 질문에만 대답하시오\n학교 정보:\n';
         const prompt = document.getElementById('input').value;
 
-        const result = await model.generateContent(presetprompt + dataprompt + '질문: ' + prompt);
+        const result = await model.generateContent(presetprompt + dataprompt + '**질문: ' + prompt + '**\n교실 위치를 물어볼 시 옆 호실도 같이 알려줘');
         const response = await result.response;
         const text = response.text();
 
