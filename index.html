@@ -26,7 +26,7 @@
         const presetprompt = '너는 충렬고등학교 정보 ai입니다. 학교와 관련된 질문에만 대답하시오\n학교 정보:\n';
         const prompt = document.getElementById('input').value;
 
-        const result = await model.generateContent(presetprompt + dataprompt + '\n\n교실 위치를 물어볼 시 어느 교실 옆에 있는지도 알려줘\n' + '질문: ' + prompt);
+        const result = await model.generateContent(presetprompt + dataprompt + '\n교실의 위치뿐만 아니라 어느 다른 교실 옆에 있는지도 알려줘\n' + '질문: ' + prompt);
         const response = await result.response;
         const text = response.text();
 
