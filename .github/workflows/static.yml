@@ -25,8 +25,8 @@ jobs:
 
       - name: Inject API Key
         run: |
-          echo "const CONFIG = { API_KEY: '${{ secrets.API_KEY }}' };" > ./env.js
-
+          echo "const CONFIG = { API_KEY: '${{ secrets.API_KEY }}' };" > ./NewUI/env.js
+          
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
